@@ -1,48 +1,65 @@
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
-import Initials from './Initials';
+import AddProduct from './assets/components/AddProduct';
+import EditProduct from './assets/components/EditProduct';
+import DeleteProduct from './assets/components/DeleteProduct';
+import ListProducts from './assets/components/ListProducts';
 
 function App() {
   const [section, setSection] = useState('home');
-  const [count, setCount] = useState(0);
+  const [products, setProducts] = useState([]);
+
+  const addProduct = (product) => {
+    setProducts([...products, product]);
+  };
+
+  const editProduct = (oldProduct, newProduct) => {
+    setProducts(products.map(product => product === oldProduct ? newProduct : product));
+  };
+
+  const deleteProduct = (productToDelete) => {
+    setProducts(products.filter(product => product !== productToDelete));
+  };
 
   return (
     <>
-      <nav>
-        <a href="#home" onClick={() => setSection('home')}>Home</a>
-        <a href="#initials" onClick={() => setSection('initials')}>Initials</a>
-      </nav>
-      {section === 'home' && (
-        <div>
+      <header>
+        <h1>Bienvenido a la gestión de productos</h1>
+        <nav>
+          <button onClick={() => setSection('home')}>Home</button>
+          <button onClick={() => setSection('add-product')}>Añadir Producto</button>
+          <button onClick={() => setSection('edit-product')}>Modificar Producto</button>
+          <button onClick={() => setSection('delete-product')}>Eliminar Producto</button>
+          <button onClick={() => setSection('list-products')}>Listar Productos</button>
+        </nav>
+      </header>
+      <main>
+        {section === 'home' && (
           <div>
-            <a href="https://vitejs.dev" target="_blank">
-              <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
+            <p>Selecciona una opción del menú para empezar.</p>
           </div>
-          <h1>Vite + React</h1>
-          <div className="card">
-            <button onClick={() => setCount((count) => count + 1)}>
-              count is {count}
-            </button>
-            <p>
-              Edit <code>src/App.jsx</code> and save to test HMR
-            </p>
-          </div>
-          <p className="read-the-docs">
-            Click on the Vite and React logos to learn more
-          </p>
-        </div>
-      )}
-      {section === 'initials' && (
-        <section id="initials">
-          <Initials />
-        </section>
-      )}
+        )}
+        {section === 'add-product' && (
+          <section id="add-product">
+            <AddProduct addProduct={addProduct} />
+          </section>
+        )}
+        {section === 'edit-product' && (
+          <section id="edit-product">
+            <EditProduct products={products} editProduct={editProduct} />
+          </section>
+        )}
+        {section === 'delete-product' && (
+          <section id="delete-product">
+            <DeleteProduct products={products} deleteProduct={deleteProduct} />
+          </section>
+        )}
+        {section === 'list-products' && (
+          <section id="list-products">
+            <ListProducts products={products} />
+          </section>
+        )}
+      </main>
     </>
   );
 }
