@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const EditProduct = ({ products, editProduct }) => {
+const EditProduct = ({ products, fetchProducts }) => {
   const [selectedProduct, setSelectedProduct] = useState('');
   const [newProduct, setNewProduct] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    editProduct(selectedProduct, newProduct);
-    setSelectedProduct('');
-    setNewProduct('');
+    try {
+      await axios.patch(`http://localhost:5000/products/${selectedProduct}`, { name: newProduct });
+      fetchProducts();
+      setSelectedProduct('');
+      setNewProduct('');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -16,8 +22,8 @@ const EditProduct = ({ products, editProduct }) => {
       <h2>Modificar Producto</h2>
       <select value={selectedProduct} onChange={(e) => setSelectedProduct(e.target.value)} required>
         <option value="">Selecciona un producto</option>
-        {products.map((product, index) => (
-          <option key={index} value={product}>{product}</option>
+        {products.map((product) => (
+          <option key={product._id} value={product._id}>{product.name}</option>
         ))}
       </select>
       <input 

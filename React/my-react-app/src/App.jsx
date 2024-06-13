@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import './App.css';
 import AddProduct from './assets/components/AddProduct';
 import EditProduct from './assets/components/EditProduct';
@@ -9,17 +10,18 @@ function App() {
   const [section, setSection] = useState('home');
   const [products, setProducts] = useState([]);
 
-  const addProduct = (product) => {
-    setProducts([...products, product]);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/products');
+      setProducts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const editProduct = (oldProduct, newProduct) => {
-    setProducts(products.map(product => product === oldProduct ? newProduct : product));
-  };
-
-  const deleteProduct = (productToDelete) => {
-    setProducts(products.filter(product => product !== productToDelete));
-  };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <>
@@ -41,17 +43,17 @@ function App() {
         )}
         {section === 'add-product' && (
           <section id="add-product">
-            <AddProduct addProduct={addProduct} />
+            <AddProduct fetchProducts={fetchProducts} />
           </section>
         )}
         {section === 'edit-product' && (
           <section id="edit-product">
-            <EditProduct products={products} editProduct={editProduct} />
+            <EditProduct products={products} fetchProducts={fetchProducts} />
           </section>
         )}
         {section === 'delete-product' && (
           <section id="delete-product">
-            <DeleteProduct products={products} deleteProduct={deleteProduct} />
+            <DeleteProduct products={products} fetchProducts={fetchProducts} />
           </section>
         )}
         {section === 'list-products' && (

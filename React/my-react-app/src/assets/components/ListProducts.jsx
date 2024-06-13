@@ -5,8 +5,8 @@ const ListProducts = ({ products }) => {
     <div>
       <h2>Lista de Productos</h2>
       <ul>
-        {products.map((product, index) => (
-          <li key={index}>{product}</li>
+        {products.map((product) => (
+          <li key={product._id}>{product.name}</li>
         ))}
       </ul>
     </div>
